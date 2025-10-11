@@ -38,5 +38,4 @@ CMD ["/sbin/tini", "--", "sh", "-c", "\
     # Start x11vnc, create display if needed \
     x11vnc -display $DISPLAY -forever -nopw -create & \
     # Start noVNC web server \
-    websockify $NOVNC_PORT localhost:5900"
-]
+    websockify $NOVNC_PORT localhost:5900" ]
