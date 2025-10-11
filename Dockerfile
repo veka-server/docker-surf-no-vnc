@@ -1,53 +1,30 @@
-# ---- Base image ----
-FROM alpine:latest
+FROM alpine:3.14
 
-# ---- Variables ----
-ENV DISPLAY=:0
-ENV VNC_PORT=5900
-ENV NOVNC_PORT=8080
-ENV NO_VNC_HOME=/usr/share/novnc
+# Setup demo environment variables
+ENV HOME=/root \
+	LANG=en_US.UTF-8 \
+	LANGUAGE=en_US.UTF-8 \
+	LC_ALL=C.UTF-8 \
+	DISPLAY=:0.0 \
+	DISPLAY_WIDTH=1280 \
+	DISPLAY_HEIGHT=720
 
-# ---- Install packages ----
-RUN apk add --no-cache \
-    x11vnc \
-    xvfb \
-    fluxbox \
-    xterm \
-    ttf-dejavu \
-    mesa-gl \
-    websockify \
-    tini \
-    bash \
-    curl \
-    supervisor
+# Install git, supervisor, VNC, & X11 packages
+RUN apk --update --upgrade add \
+	bash \
+	fluxbox \
+	supervisor \
+	x11vnc \
+	xterm \
+	xvfb
+RUN mkdir /root/.vnc/ && x11vnc -storepasswd 1234 /root/.vnc/passwd
 
-# ---- noVNC ----
-RUN mkdir -p $NO_VNC_HOME \
-    && curl -L https://github.com/novnc/noVNC/archive/refs/heads/master.tar.gz | tar xz --strip-components=1 -C $NO_VNC_HOME
+# Clone noVNC from github
+ADD noVNC/ /root/noVNC/
+COPY noVNC/vnc.html /root/noVNC/index.html
 
-# ---- VNC password ----
-RUN mkdir -p /root/.vnc \
-    && x11vnc -storepasswd 1234 /root/.vnc/passwd
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# ---- Start script ----
-RUN echo -e '#!/bin/sh\n\
-# Start X server\n\
-Xvfb :0 -screen 0 1024x768x16 &\n\
-sleep 5\n\
-# Start Fluxbox + Xterm\n\
-fluxbox &\n\
-xterm &\n\
-# Start x11vnc\n\
-x11vnc -forever -usepw -display :0 -rfbport $VNC_PORT &\n\
-# Start noVNC\n\
-websockify --web $NO_VNC_HOME $NOVNC_PORT localhost:$VNC_PORT' \
-> /usr/local/bin/start_fluxbox.sh
+EXPOSE 8080
 
-RUN chmod +x /usr/local/bin/start_fluxbox.sh
-
-# ---- Expose ports ----
-EXPOSE $VNC_PORT $NOVNC_PORT
-
-# ---- Entrypoint ----
-ENTRYPOINT ["tini", "--"]
-CMD ["/usr/local/bin/start_fluxbox.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
