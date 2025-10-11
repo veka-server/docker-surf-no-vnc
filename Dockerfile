@@ -1,10 +1,10 @@
 FROM alpine:latest
 
 # =========================
-# 🧩 Installation des dépendances légères
+# 🧩 Installation des dépendances
 # =========================
 RUN apk add --no-cache \
-    falkon \
+    firefox-esr \
     xvfb \
     x11vnc \
     fluxbox \
@@ -15,7 +15,7 @@ RUN apk add --no-cache \
     tini
 
 # =========================
-# ⚙️ Configuration Supervisor (corrigée)
+# ⚙️ Configuration Supervisor
 # =========================
 RUN echo "[supervisord]" > /etc/supervisord.conf && \
     echo "nodaemon=true" >> /etc/supervisord.conf && \
@@ -37,9 +37,9 @@ RUN echo "[supervisord]" > /etc/supervisord.conf && \
     echo "command=/usr/bin/websockify --web=/usr/share/novnc/ 8080 localhost:5900" >> /etc/supervisord.conf && \
     echo "autorestart=true" >> /etc/supervisord.conf && \
     \
-    echo "[program:falkon]" >> /etc/supervisord.conf && \
-    echo "command=/usr/bin/falkon --no-remote --profile /root/.config/falkon/profile --no-session --start-maximized --url https://check.torproject.org" >> /etc/supervisord.conf && \
-    echo "environment=DISPLAY=':0',QTWEBENGINE_CHROMIUM_FLAGS='--proxy-server=socks5://tor:9050 --disable-javascript'" >> /etc/supervisord.conf && \
+    echo "[program:firefox]" >> /etc/supervisord.conf && \
+    echo "command=/usr/bin/firefox-esr --no-remote --profile /root/.mozilla/firefox --new-instance https://check.torproject.org" >> /etc/supervisord.conf && \
+    echo "environment=DISPLAY=':0', MOZ_DISABLE_CONTENT_SANDBOX=1, ALL_PROXY='socks5://tor:9050'" >> /etc/supervisord.conf && \
     echo "autorestart=true" >> /etc/supervisord.conf
 
 # =========================
