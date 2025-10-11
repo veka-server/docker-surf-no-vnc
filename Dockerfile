@@ -1,41 +1,22 @@
 FROM alpine:latest
 
-# =========================
-# Installer dépendances
-# =========================
 RUN apk add --no-cache \
-    bash \
+    x11vnc \
+    xvfb \
     fluxbox \
     xterm \
-    xvfb \
-    x11vnc \
     novnc \
     websockify \
-    tini \
-    netcat-openbsd
+    bash \
+    tini
 
-# =========================
-# Script de démarrage Fluxbox + xterm
-# =========================
-RUN mkdir -p /root/.vnc \
-    && echo '#!/bin/sh' > /root/.vnc/xstartup \
-    && echo 'fluxbox &' >> /root/.vnc/xstartup \
-    && echo 'xterm &' >> /root/.vnc/xstartup \
-    && chmod +x /root/.vnc/xstartup
+ENV DISPLAY=:1
 
-# =========================
-# Variables et ports
-# =========================
-ENV DISPLAY=:0
 EXPOSE 8080 5900
 
-# =========================
-# Lancement Xvfb, xstartup, x11vnc et websockify
-# =========================
-CMD Xvfb :0 -screen 0 1024x768x16 & \
+CMD Xvfb $DISPLAY -screen 0 1024x768x16 & \
     sleep 1 && \
-    /root/.vnc/xstartup & \
-    x11vnc -display :0 -nopw -forever -shared -rfbport 5900 -listen 0.0.0.0 & \
-    # wait que x11vnc soit prêt avant websockify
-    while ! nc -z localhost 5900; do sleep 0.5; done; \
-    websockify --web=/usr/share/novnc/ 8080 localhost:5900
+    fluxbox & \
+    xterm & \
+    x11vnc -display $DISPLAY -forever -nopw -create & \
+    websockify 8080 localhost:5900
