@@ -1,7 +1,7 @@
 FROM alpine:latest
 
 # =========================
-# 🧩 Installation des dépendances
+# Dépendances de base + Firefox
 # =========================
 RUN apk add --no-cache \
     firefox-esr \
@@ -12,10 +12,21 @@ RUN apk add --no-cache \
     novnc \
     websockify \
     bash \
-    tini
+    tini \
+    gtk+3.0 \
+    dbus \
+    ttf-freefont \
+    fontconfig \
+    alsa-lib \
+    libXt \
+    libXrender \
+    libXcomposite \
+    libXdamage \
+    libXrandr \
+    libxkbcommon
 
 # =========================
-# ⚙️ Configuration Supervisor
+# Supervisor configuration
 # =========================
 RUN echo "[supervisord]" > /etc/supervisord.conf && \
     echo "nodaemon=true" >> /etc/supervisord.conf && \
@@ -39,12 +50,9 @@ RUN echo "[supervisord]" > /etc/supervisord.conf && \
     \
     echo "[program:firefox]" >> /etc/supervisord.conf && \
     echo "command=/usr/bin/firefox-esr --no-remote --profile /root/.mozilla/firefox --new-instance https://check.torproject.org" >> /etc/supervisord.conf && \
-    echo "environment=DISPLAY=':0', MOZ_DISABLE_CONTENT_SANDBOX=1, ALL_PROXY='socks5://tor:9050'" >> /etc/supervisord.conf && \
+    echo "environment=DISPLAY=':0',MOZ_DISABLE_CONTENT_SANDBOX=1,ALL_PROXY='socks5://tor:9050'" >> /etc/supervisord.conf && \
     echo "autorestart=true" >> /etc/supervisord.conf
 
-# =========================
-# 🚀 Démarrage via Tini + Supervisor
-# =========================
 EXPOSE 8080
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
