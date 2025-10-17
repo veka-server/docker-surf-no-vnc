@@ -4,6 +4,7 @@ FROM alpine:latest
 RUN apk add --no-cache \
     xvfb \
     x11vnc \
+    novnc \
     xterm \
     supervisor \
     python3 \
