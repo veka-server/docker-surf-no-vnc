@@ -10,6 +10,7 @@ RUN apk add --no-cache \
     py3-pip \
     git \
     fluxbox \
+    novnc \
     websockify
 
 # Créer les répertoires nécessaires
