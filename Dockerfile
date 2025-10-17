@@ -2,8 +2,6 @@ FROM alpine:latest
 
 # Installer les dépendances nécessaires
 RUN apk add --no-cache \
-#    xvfb \
-#    x11vnc \
     novnc \
     ttf-dejavu \
     fontconfig
@@ -16,6 +14,8 @@ RUN apk add --no-cache \
     tigervnc \
     websockify \
     firefox
+#    xvfb \
+#    x11vnc \
 
 # Créer les répertoires nécessaires
 RUN mkdir -p /var/log/supervisor /root/.vnc
