@@ -12,11 +12,25 @@ RUN apk add --no-cache \
     git \
     fluxbox \
     tigervnc \
-    websockify
+    websockify \
+    firefox
 
 # Créer les répertoires nécessaires
 RUN mkdir -p /var/log/supervisor /root/.vnc
 RUN mkdir -p /app/supervisor /app/.vnc /app/.config/openbox 
+
+
+# --- CONFIGURATION FIREFOX PROFIL TEMPORAIRE ---
+RUN mkdir -p /root/.mozilla/firefox/firefox-noscript && \
+    echo 'user_pref("javascript.enabled", false);' > /root/.mozilla/firefox/firefox-noscript/user.js && \
+    echo 'user_pref("extensions.enabledScopes", 0);' >> /root/.mozilla/firefox/firefox-noscript/user.js && \
+    echo 'user_pref("extensions.autoDisableScopes", 15);' >> /root/.mozilla/firefox/firefox-noscript/user.js && \
+    echo 'user_pref("network.proxy.type", 1);' >> /root/.mozilla/firefox/firefox-noscript/user.js && \
+    echo 'user_pref("network.proxy.socks", "tor");' >> /root/.mozilla/firefox/firefox-noscript/user.js && \
+    echo 'user_pref("network.proxy.socks_port", 9050);' >> /root/.mozilla/firefox/firefox-noscript/user.js && \
+    echo 'user_pref("network.proxy.socks_version", 5);' >> /root/.mozilla/firefox/firefox-noscript/user.js && \
+    echo 'user_pref("network.proxy.socks_remote_dns", true);' >> /root/.mozilla/firefox/firefox-noscript/user.js
+
 
 # Copier les fichiers de configuration
 COPY supervisord.conf /etc/supervisor/supervisord.conf
