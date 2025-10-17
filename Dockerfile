@@ -18,8 +18,6 @@ RUN mkdir -p /var/log/supervisor /root/.vnc
 
 # Copier les fichiers de configuration
 COPY supervisord.conf /etc/supervisor/supervisord.conf
-COPY vnc.sh /usr/local/bin/vnc.sh
-RUN chmod +x /usr/local/bin/vnc.sh
 
 # Exposer les ports
 EXPOSE 5900 6080
