@@ -2,9 +2,11 @@ FROM alpine:latest
 
 # Installer les dépendances nécessaires
 RUN apk add --no-cache \
-    xvfb \
-    x11vnc \
+#    xvfb \
+#    x11vnc \
     novnc \
+    ttf-dejavu \
+    fontconfig
     xterm \
     supervisor \
     python3 \
