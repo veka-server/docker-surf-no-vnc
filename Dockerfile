@@ -10,7 +10,7 @@ RUN apk add --no-cache \
     py3-pip \
     git \
     fluxbox \
-    tigervnc-server \
+    tigervnc \
     websockify
 
 # Créer les répertoires nécessaires
