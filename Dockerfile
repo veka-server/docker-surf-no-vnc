@@ -4,7 +4,7 @@ FROM alpine:latest
 RUN apk add --no-cache \
     novnc \
     ttf-dejavu \
-    fontconfig
+    fontconfig \
     xterm \
     supervisor \
     python3 \
