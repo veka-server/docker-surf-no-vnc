@@ -15,6 +15,7 @@ RUN apk add --no-cache \
 
 # Créer les répertoires nécessaires
 RUN mkdir -p /var/log/supervisor /root/.vnc
+RUN mkdir -p /app/supervisor /app/.vnc /app/.config/openbox 
 
 # Copier les fichiers de configuration
 COPY supervisord.conf /etc/supervisor/supervisord.conf
