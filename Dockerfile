@@ -14,8 +14,6 @@ RUN apk add --no-cache \
     tigervnc \
     websockify \
     firefox
-#    xvfb \
-#    x11vnc \
 
 # Créer les répertoires nécessaires
 RUN mkdir -p /var/log/supervisor /root/.vnc
