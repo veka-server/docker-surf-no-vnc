@@ -31,6 +31,12 @@ RUN mkdir -p /root/.mozilla/firefox/firefox-noscript && \
     echo 'user_pref("network.proxy.socks_version", 5);' >> /root/.mozilla/firefox/firefox-noscript/user.js && \
     echo 'user_pref("network.proxy.socks_remote_dns", true);' >> /root/.mozilla/firefox/firefox-noscript/user.js
 
+# --- Personalisation DU MENU FLUXBOX ---
+RUN mkdir -p /root/.fluxbox && \
+    echo '[begin] (Fluxbox)' > /root/.fluxbox/menu && \
+    echo '    [exec] (Terminal) {xterm}' >> /root/.fluxbox/menu && \
+    echo '    [exec] (Firefox sécurisé) {firefox --no-remote --profile /root/.mozilla/firefox/firefox-noscript}' >> /root/.fluxbox/menu && \
+    echo '[end]' >> /root/.fluxbox/menu
 
 # Copier les fichiers de configuration
 COPY supervisord.conf /etc/supervisor/supervisord.conf
