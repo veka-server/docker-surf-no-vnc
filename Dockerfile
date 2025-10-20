@@ -7,9 +7,6 @@ RUN apk add --no-cache \
     fontconfig \
     xterm \
     supervisor \
-#    python3 \
-#    py3-pip \
-#    git \
     fluxbox \
     tigervnc \
     websockify \
