@@ -4,6 +4,8 @@ FROM alpine:latest
 RUN apk add --no-cache \
     novnc \
     ttf-dejavu \
+    curl \
+    proxychains-ng \
     fontconfig \
     xterm \
     supervisor \
